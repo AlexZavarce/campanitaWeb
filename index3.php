@@ -18,12 +18,12 @@
     <!--script type="text/javascript" src="vista/js/formulario.js"></script-->  
     <link href="vista/css/estilos.css" rel="stylesheet" type="text/css" media="screen" />
  <!--  
-    <script type="text/javascript" src="vista/pantallas/gridProductos.js"></script>
+    <script type="text/javascript" src="vista/pantallas/listas/gridProductos.js"></script>
      <script type="text/javascript" src="vista/pantallas/arbol.js"></script>
     
-    <script type="text/javascript" src="vista/pantallas/registrarPolla.js"></script>
+    <script type="text/javascript" src="vista/pantallas/formularios/registrarPolla.js"></script>
      -->
-     <script type="text/javascript" src="vista/pantallas/registrarUsuario.js"></script>
+     <script type="text/javascript" src="vista/pantallas/formularios/registrarUsuario.js"></script>
     
 
 </head>
