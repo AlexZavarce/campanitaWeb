@@ -1,0 +1,82 @@
+    
+/*Estilo del contenedor del sistema*/    
+#contenido{ position:absolute; z-index:0; margin-top: 3%; margin-left: 15%; width:10%;   top:0px;}
+
+#estructura{
+	margin-left: 1%;
+	width: 25%;
+}
+#arbol{
+position:absolute; z-index:0; margin-left:-2%; margin-top:0%; font-size:1.083em; top:0px;}
+
+}
+body{background: transparent;}
+
+
+
+.myimagebuttonguardar{
+    width:100% !important;
+    height:100% !important;
+    font-size: 30px;
+    background-image:url('../img/iconos/guardar.ico') !important;
+
+}
+
+.myimagebuttonlimpiar{
+    width:100% !important;
+    height:100% !important;
+    font-size: 30px;
+    background-image:url('../img/iconos/limpiar.ico') !important;
+
+}
+
+.myimagebuttonfoto{
+    width:100% !important;
+    height:100% !important;
+    font-size: 30px;
+    background-image:url('../img/iconos/foto.ico') !important;
+
+}
+
+.myimagebuttonsalir{
+    width:100% !important;
+    height:100% !important;
+
+    background-image:url('../img/iconos/atras.ico') !important;
+
+}
+
+
+.myimagebuttonnuevo{
+    width:100% !important;
+    height:100% !important;
+    font-size: 30px;
+    background-image:url('../img/iconos/nuevo.ico') !important;
+
+}
+
+
+.myimagebuttoneditar{
+    width:100% !important;
+    height:100% !important;
+    font-size: 30px;
+    background-image:url('../img/iconos/editar.ico') !important;
+
+}
+
+
+.myimagebuttonborrar{
+    width:100% !important;
+    height:100% !important;
+    font-size: 30px;
+    background-image:url('../img/iconos/borrar.ico') !important;
+
+}
+
+.myimagebuttonpanel{
+    width:px !important;
+    height:10px !important;
+    font-size: 30px;
+    background-image:url('../img/iconos/users.ico') !important;
+
+}
