@@ -43,7 +43,7 @@ Ext.define('comboHipodromo', {
 
     var panel = Ext.create('Ext.form.Panel', {
         //renderTo: 'fi-form',
-        layout: 'absolute',
+        //layout: 'absolute',
         height: 370,
         width: 950,
         frame: false,
@@ -51,7 +51,7 @@ Ext.define('comboHipodromo', {
         collapsed: false,
         closable: false,
         //title: 'ADICIONAR DOCUMENTO',
-        bodyPadding: '10 10 0',
+        //bodyPadding: '10 10 0',
 
         defaults: {
             anchor: '100%',
@@ -61,47 +61,86 @@ Ext.define('comboHipodromo', {
         },
 
     items: [
+    {
+            xtype: 'toolbar',
+            items: [{
+                //iconCls: 'icon-save',
+                itemId: 'aceptar',
+                height:30,
+                width:100,
+                id: 'guardarBanco',
+                text: 'Guardar',
+                action: 'add',
+                handler: function (){
+                    if(encontrado=0){
+                        registrarBanco()                                
+                    }
+                    else{
+                        actualizarBanco()
+                    }
+                }
+            },
+            {
+                //iconCls: 'icon-save',
+                height:30,
+                width:100,
+                itemId: 'limpiar',
+                text: 'Limpiar',
+                id: 'limpiarBanco',
+                //disabled: true,
+                action: 'editar',
+                handler: function (){
+                     limpiar()
+                }
+            },
+            {
+                //iconCls: 'icon-delete',
+                //disabled: true,
+                height:30,
+                width:100,
+                id: 'salirBanco',
+                text: 'Salir',
+                handler: function (){
+                    cerrar()    
+                }
+            }]
+        },
         {
             xtype: 'fieldset',
-            x: 20,
+            x: 10,
             y: 10,
             height: 60,
-            width: 640,
+            width: 340,
             layout: 'absolute',
             title: '',
             items: [
                 {
-                    xtype: 'combobox',
+                    xtype: 'textfield',
                     x: 20,
                     y: 10,
                     width: 280,
-                    displayField: 'nombre',
-                    valueField: 'id',
-                    store:store,
-                   // store: comboUsuario, //asignandole el store
-                   // valueField: 'login',
-                   // displayField:'id',
-                    fieldLabel: 'Hipodromo'
-                    
+                    fieldLabel: 'Hipodromo',
+                    readOnly: true
 
                 },
                 {
-                    xtype: 'datefield',
+                    xtype: 'textfield',
                     x: 340,
                     y: 10,
                     width: 280,
                     
-                    fieldLabel: 'Fecha de Jugada'
+                    fieldLabel: 'Fecha de Jugada',
+                    readOnly: true
 
                 }
             ]
         },
         {
             xtype: 'fieldset',
-            x: 20,
-            y: 70,
+            x: 10,
+            y: 10,
             height: 180,
-            width: 640,
+            
             layout: 'absolute',
             title: 'Polla',
             items: [
@@ -109,6 +148,7 @@ Ext.define('comboHipodromo', {
                     xtype: 'textfield',
                     x: 220,
                     y: 70,
+                    id:'txtValida2Puesto2',
                     width: 90,
                     fieldLabel: ''
                 },
@@ -117,6 +157,7 @@ Ext.define('comboHipodromo', {
                     x: 330,
                     y: 70,
                     width: 90,
+                    id:'txtValida3Puesto2',
                     fieldLabel: ''
                 },
                 {
@@ -124,6 +165,7 @@ Ext.define('comboHipodromo', {
                     x: 330,
                     y: 110,
                     width: 90,
+                    id:'txtValida3Puesto3',
                     fieldLabel: ''
                 },
                 {
@@ -131,6 +173,7 @@ Ext.define('comboHipodromo', {
                     x: 440,
                     y: 70,
                     width: 90,
+                    id:'txtValida4Puesto2',
                     fieldLabel: ''
                 },
                 {
@@ -138,6 +181,7 @@ Ext.define('comboHipodromo', {
                     x: 440,
                     y: 110,
                     width: 90,
+                    id:'txtValida4Puesto3',
                     fieldLabel: ''
                 },
                 {
@@ -145,6 +189,7 @@ Ext.define('comboHipodromo', {
                     x: 550,
                     y: 70,
                     width: 90,
+                    id:'txtValida5Puesto2',
                     fieldLabel: ''
                 },
                 {
@@ -152,6 +197,7 @@ Ext.define('comboHipodromo', {
                     x: 550,
                     y: 30,
                     width: 90,
+                    id:'txtValida5Puesto1',
                     fieldLabel: ''
                 },
                 {
@@ -159,6 +205,7 @@ Ext.define('comboHipodromo', {
                     x: 660,
                     y: 110,
                     width: 90,
+                    id:'txtValida6Puesto3',
                     fieldLabel: ''
                 },
                 {
@@ -166,6 +213,7 @@ Ext.define('comboHipodromo', {
                     x: 660,
                     y: 70,
                     width: 90,
+                    id:'txtValida6Puesto2',
                     fieldLabel: ''
                 },
                 {
@@ -173,6 +221,7 @@ Ext.define('comboHipodromo', {
                     x: 660,
                     y: 30,
                     width: 90,
+                    id:'txtValida6Puesto1',
                     fieldLabel: ''
                 },
                 {
@@ -180,6 +229,7 @@ Ext.define('comboHipodromo', {
                     x: 770,
                     y: 30,
                     width: 90,
+                    id:'txtValida7Puesto1',
                     fieldLabel: ''
                 },
                 {
@@ -187,6 +237,7 @@ Ext.define('comboHipodromo', {
                     x: 770,
                     y: 110,
                     width: 90,
+                    id:'txtValida7Puesto3',
                     fieldLabel: ''
                 },
                 {
@@ -194,6 +245,7 @@ Ext.define('comboHipodromo', {
                     x: 770,
                     y: 70,
                     width: 90,
+                    id:'txtValida7Puesto2',
                     fieldLabel: ''
                 },
                 {
@@ -201,6 +253,7 @@ Ext.define('comboHipodromo', {
                     x: 220,
                     y: 110,
                     width: 90,
+                    id:'txtValida2Puesto3',
                     fieldLabel: ''
                 },
                 {
@@ -208,6 +261,7 @@ Ext.define('comboHipodromo', {
                     x: 550,
                     y: 110,
                     width: 90,
+                    id:'txtValida5Puesto3',
                     fieldLabel: ''
                 },
                 {
@@ -215,6 +269,7 @@ Ext.define('comboHipodromo', {
                     x: 440,
                     y: 30,
                     width: 90,
+                    id:'txtValida4Puesto1',
                     fieldLabel: ''
                 },
                 {
@@ -222,6 +277,7 @@ Ext.define('comboHipodromo', {
                     x: 330,
                     y: 30,
                     width: 90,
+                    id:'txtValida3Puesto1',
                     fieldLabel: ''
                 },
                 {
@@ -229,6 +285,7 @@ Ext.define('comboHipodromo', {
                     x: 220,
                     y: 30,
                     width: 90,
+                    id:'txtValid2Puesto1',
                     fieldLabel: ''
                 },
                 {
@@ -236,6 +293,7 @@ Ext.define('comboHipodromo', {
                     x: 10,
                     y: 70,
                     width: 190,
+                    id:'txtValida1Puesto1',
                     fieldLabel: 'Segundo'
                 },
                 {
@@ -244,7 +302,7 @@ Ext.define('comboHipodromo', {
                     y: 30,
                     width: 190,
                     
-                    id: 'primero',
+                    id:'txtValida1Puesto2',
                 name: 'primero',
                     fieldLabel: 'Primero'
                 },
@@ -253,6 +311,7 @@ Ext.define('comboHipodromo', {
                     x: 10,
                     y: 110,
                     width: 190,
+                    id:'txtValida1Puesto3',
                     fieldLabel: 'Tercero'
                 },
                 {
@@ -299,42 +358,7 @@ Ext.define('comboHipodromo', {
                 }
             ]
         },
-        {
-            xtype: 'fieldset',
-            x: 20,
-            y: 260,
-            height: 65,
-            width: 640,
-            layout: 'absolute',
-            title: '',
-            items: [
-        
-		        {
-		            xtype: 'button',
-		            x: 580,
-		            y: 10,
-		            height: 30,
-		            width:70,
-		            text: 'Jugar'
-		        },
-		        {
-		            xtype: 'button',
-		            x: 680,
-		            y: 10,
-		            height: 30,
-		            width:70,
-		            text: 'Limpiar'
-		        },
-		        {
-		            xtype: 'button',
-		            x: 780,
-		            y: 10,
-		            height: 30,
-		            width:70,
-		            text: 'Grabar'
-		        }
-		    ]
-        }
+       
      ]
     });
     
@@ -343,7 +367,7 @@ Ext.define('comboHipodromo', {
         title: 'Registrar Polla',
         layout: 'absolute',
         floatting	: 	true,
-        hidden		:	true,
+        //hidden		:	true,
         x			:	30,
 	    y			:	20,
 	    border		:   true,
