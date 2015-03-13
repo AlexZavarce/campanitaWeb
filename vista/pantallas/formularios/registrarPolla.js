@@ -16,30 +16,8 @@ Ext.onReady(function() {
         });
     };
 
-cargarDatosUsuario();
-Ext.define('comboHipodromo', {
-        extend: 'Ext.data.Model',
-        fields: [
-            {name:'id', type:'int'},
-            {name:'nombre', type:'string'},
-            {name:'estatus', type:'int'},
-        ],
-    });
 
-    var store = Ext.create('Ext.data.Store', {
-        model: 'comboHipodromo',
-        autoLoad: true,
-        proxy: {
-           
-            type: 'ajax',
-            url: 'control/comboUsuarios.php', // archivo que contiene las operaciones de postgres
 
-            reader: { 
-                type: 'json',
-                root: 'bancos'
-            }
-        }
-    });
 
     var panel = Ext.create('Ext.form.Panel', {
         //renderTo: 'fi-form',
@@ -362,42 +340,31 @@ Ext.define('comboHipodromo', {
      ]
     });
     
-    var main = new Ext.Panel({
-        renderTo    :   "contenido",
-        title: 'Registrar Polla',
-        layout: 'absolute',
-        floatting	: 	true,
-        //hidden		:	true,
-        x			:	30,
+    var main = Ext.define('App.miVentanaBanco', {
+            extend: 'Ext.window.Window',
+            id: 'miVentanaBanco',
+            renderTo    :   "contenido",
+            title: 'Nuevo Banco',
+            closeAction :'hide',
+            closable    : false,
+            resizable   : false,
+            floatting   :   true,
+            //hidden        :   true,
+            x			:	30,
 	    y			:	20,
 	    border		:   true,
-		modal       :   false,
-		frame 		:   true,
-        height		:	370,
-        width		:	950,
-        layout		:	'fit',
-        items		:	[panel]
+            modal       :   false,
+            frame 		:   true,
+            height		:	370,
+            width		:	950,
+            items       :   [panel]
+        });
+ ventanaResultados = Ext.create ('App.miVentanaBanco');
+ ventanaResultados.show();
+
+
     });
+    
+   
 
-    //ventana.show();
-
-});
-
-
-   function cargarDatosUsuario() {
-     Ext.Ajax.request({
-            url: 'control/comboUsuarios.php',
-         method: 'GET',
-             //Retorno exitoso de la pagina servidora a traves del formato JSON
-             success: function( resultado, request ) {
-                datos=Ext.JSON.decode(resultado.responseText);
-                nombreUsuario = datos.nombre;
-                Ext.getCmp('primero').setValue(datos.nombre);
-             },
-             //No hay retorno de la pagina servidora
-             failure: function() {
-              Ext.Msg.alert("Error", "Servidor no conectado");
-             }
-            });
-   }
    

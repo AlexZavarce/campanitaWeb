@@ -1,5 +1,7 @@
 var encontrado = 0;
 var ventana=null;
+var ventanaResultados=null;
+
 Ext.onReady(function() {
 
 //  Class which shows invisible file input field.
@@ -17,20 +19,22 @@ Ext.onReady(function() {
             buttons: Ext.Msg.OK
         });
     };
-//--------------------------------------------------------------------
+//-------------------------LISTA DEL PRINCIPIO----------------------------------
 
-    Ext.define('gridBanco', {
+    Ext.define('gridPollaJugada', {
             extend: 'Ext.data.Model',
             fields: [
-                {name:'id', type:'int'},
-                {name:'nombre', type:'string'},
-                {name:'estatus', type:'int'},
+                {name:'pollas.id', type:'int'},
+                {name:'pollas.hipodromos.nombre', type:'string'},
+                {name:'pollas.fecha_jugada.date', type:'date'},
+                {name:'pollas.estatus', type:'int'},
+                
             ] 
     });
         
 
-    var storeBanco = Ext.create('Ext.data.Store', {
-        model: 'gridBanco',
+    var store = Ext.create('Ext.data.Store', {
+        model: 'gridPollaJugada',
         autoLoad: true,
         pageSize: 12,
         autoLoad: {start: 0, limit: 12},
@@ -38,11 +42,11 @@ Ext.onReady(function() {
         proxy: {
            
             type: 'ajax',
-            url: 'control/mostrarGridBanco.php', // archivo que contiene las operaciones de postgres
+            url: 'control/mostrarGridPollaJugada.php', // archivo que contiene las operaciones de postgres
 
             reader: { 
                 type: 'json',
-                root: 'bancos',
+                root: 'datos',
                 totalProperty: 'total',
 
             }
@@ -61,7 +65,7 @@ var filtersCfg = {
     };
 
     var listadoCamposFormulario=Ext.create('Ext.grid.Panel', {
-    store: storeBanco,
+    store: store,
     id: 'listadoCamposFormulario',
     layout:'fit',
     requires: ['Ext.toolbar.Paging'],
@@ -71,12 +75,14 @@ var filtersCfg = {
                     Ext.Msg.alert('Banco','Title: '+record.get('nombre')); //alert temporal
                 }, 
                 itemclick: function(dv, record, item, index, e) {
-                    Ext.getCmp('editarBanco').setDisabled(false);
-                    Ext.getCmp('eliminarBanco').setDisabled(false);
+                    Ext.getCmp('verPollaJugada').setDisabled(false);
+                    Ext.getCmp('eliminarPollaJugada').setDisabled(false);
+                    Ext.getCmp('resultadoPollaJugada').setDisabled(false);
+                   
                    
                 }
             },
-    columns: [
+    columns:[
                {
                     id:'id',
                     header: 'id', 
@@ -84,23 +90,24 @@ var filtersCfg = {
                     sortable: true,
                     hidden: true,
                     flex:1,
-                    dataIndex: 'id'
+                    dataIndex: 'pollas.id'
                },
                {
-                    text: 'Nombre',
+                    text: 'Hipodromo',
                     width: 260,
                     sortable: true,
                     hideable: false,
                     flex:1,
-                    dataIndex: 'nombre'
+                    dataIndex: 'pollas.hipodromos.nombre'
      
                 },
                 {
-                    text: 'Estatus',
+                    text: 'Fecha de Jugada',
                     width: 260,
-                    dataIndex: 'estatus',
+                    dataIndex: 'pollas.fecha_jugada.date',
                     hidden: false,
                     flex:1,
+                    renderer: Ext.util.Format.dateRenderer('d-m-Y'),//Esto da el formato a la fedcha para que se vea como quiero
                     sorteable: true
                 }
             ],
@@ -108,34 +115,34 @@ var filtersCfg = {
            {
             xtype: 'toolbar',
             items: [{
-                iconCls: 'icon-save',
-                itemId: 'add',
+                iconCls: 'myimagebuttonnuevo',
+              
                 height:30,
                 width:100,
-                id: 'nuevoBanco',
-                text: 'Nuevo',
-                action: 'add',
+                id: 'resultadoPollaJugada',
+                text: 'Resultado',
+                disabled: true,
                 handler: function (){
-                                mostrarFormulario()
+                    mostrarFormulario()
                 }
             },{
                 iconCls: 'icon-save',
-                itemId: 'editar',
+               
                 height:30,
                 width:100,
-                text: 'Editar',
-                id: 'editarBanco',
+                text: 'Ver',
+                id: 'verPollaJugada',
                 disabled: true,
-                action: 'editar',
+               
                 handler: function (){
-                    editarFormulario()
+                    verFormulario()
                 }
             },{
-                iconCls: 'icon-delete',
+                iconCls: 'myimagebuttonborrar',
                 height:30,
                 width:100,
                 disabled: true,
-                 id: 'eliminarBanco',
+                id: 'eliminarPollaJugada',
                 text: 'Eliminar',
                 action: 'delete'
             }]
@@ -144,7 +151,7 @@ var filtersCfg = {
             xtype: 'pagingtoolbar',
             dock:'bottom',
             pageSize: 3,
-            store: storeBanco,
+            store: store,
             displayInfo: true,
             displayMsg: 'Mostrando Contatos {0} - {1} de {2}',
             emptyMsg: "No se han encontrado Registros."
@@ -180,8 +187,9 @@ var filtersCfg = {
 /*Fin componenete principal*/   
         
 
-//_-------------------------------------------------------------------
+//_-----------------------------------------------------------------------------
 
+//-----------------------Panel para Registrar Validas---------------------------
 
     var panel = Ext.create('Ext.form.Panel', {
         //renderTo: 'fi-form',
@@ -254,13 +262,12 @@ var filtersCfg = {
             {
             xtype: 'toolbar',
             items: [{
-                //iconCls: 'icon-save',
+                iconCls : 'myimagebuttonguardar',
                 itemId: 'aceptar',
                 height:30,
                 width:100,
-                id: 'guardarBanco',
+                
                 text: 'Guardar',
-                action: 'add',
                 handler: function (){
                     if(encontrado=0){
                         registrarBanco()                                
@@ -271,24 +278,20 @@ var filtersCfg = {
                 }
             },
             {
-                //iconCls: 'icon-save',
+                iconCls : 'myimagebuttonlimpiar',
                 height:30,
                 width:100,
                 itemId: 'limpiar',
                 text: 'Limpiar',
-                id: 'limpiarBanco',
-                //disabled: true,
                 action: 'editar',
                 handler: function (){
-                     limpiar()
+                    
                 }
             },
             {
-                //iconCls: 'icon-delete',
-                //disabled: true,
+                iconCls : 'myimagebuttonsalir',
                 height:30,
                 width:100,
-                id: 'salirBanco',
                 text: 'Salir',
                 handler: function (){
                     cerrar()    
@@ -318,7 +321,375 @@ var filtersCfg = {
         });
 
     });
-//********************************FUNCIONES**********************************************************
+
+//------------------------------------------------------------------------------
+
+//-----------------------Panel para Mostrar Resultados--------------------------
+  
+    var panel2 = Ext.create('Ext.form.Panel', {
+        height: 370,
+        width: 950,
+        frame: false,
+        collapsible: false,
+        collapsed: false,
+        closable: false,
+        //title: 'ADICIONAR DOCUMENTO',
+        //bodyPadding: '10 10 0',
+
+        defaults: {
+            anchor: '100%',
+            allowBlank: false,
+            msgTarget: 'side',
+            labelWidth: 70
+        },
+
+    items: [
+    {
+            xtype: 'toolbar',
+            items: [{
+                 iconCls : 'myimagebuttonguardar',
+                itemId: 'aceptar',
+                height:30,
+                width:100,
+              
+                text: 'Guardar',
+                action: 'add',
+                handler: function (){
+                  
+                }
+            },
+            {
+                iconCls : 'myimagebuttonlimpiar',
+                height:30,
+                width:100,
+                itemId: 'limpiar',
+                text: 'Limpiar',
+                action: 'editar',
+                handler: function (){
+                    
+                }
+            },
+            {
+                iconCls : 'myimagebuttonsalir',
+               
+                height:30,
+                width:100,
+               
+                text: 'Salir',
+                handler: function (){
+                   cerrarVer()
+                }
+            }]
+        },
+        {
+            xtype: 'fieldset',
+            x: 10,
+            y: 10,
+            height: 60,
+            width: 340,
+            layout: 'absolute',
+            title: '',
+            items: [
+                {
+                    xtype: 'textfield',
+                    x: 20,
+                    y: 10,
+                    width: 280,
+                    fieldLabel: 'Hipodromo',
+                    readOnly: true
+
+                },
+                {
+                    xtype: 'textfield',
+                    x: 340,
+                    y: 10,
+                    width: 280,
+                    
+                    fieldLabel: 'Fecha de Jugada',
+                    readOnly: true
+
+                }
+            ]
+        },
+        {
+            xtype: 'fieldset',
+            x: 10,
+            y: 10,
+            height: 180,
+            
+            layout: 'absolute',
+            title: 'Polla',
+            items: [
+                {
+                    xtype: 'textfield',
+                    x: 220,
+                    y: 70,
+                    id:'txtValida2Puesto2',
+                    width: 90,
+                    readOnly: true,
+                    fieldLabel: ''
+                },
+                {
+                    xtype: 'textfield',
+                    x: 330,
+                    y: 70,
+                    width: 90,
+                    id:'txtValida3Puesto2',
+                    readOnly: true,
+                    fieldLabel: ''
+                },
+                {
+                    xtype: 'textfield',
+                    x: 330,
+                    y: 110,
+                    width: 90,
+                    id:'txtValida3Puesto3',
+                    readOnly: true,
+                    fieldLabel: ''
+                },
+                {
+                    xtype: 'textfield',
+                    x: 440,
+                    y: 70,
+                    width: 90,
+                    id:'txtValida4Puesto2',
+                    readOnly: true,
+                    fieldLabel: ''
+                },
+                {
+                    xtype: 'textfield',
+                    x: 440,
+                    y: 110,
+                    width: 90,
+                    id:'txtValida4Puesto3',
+                    readOnly: true,
+                    fieldLabel: ''
+                },
+                {
+                    xtype: 'textfield',
+                    x: 550,
+                    y: 70,
+                    width: 90,
+                    id:'txtValida5Puesto2',
+                    readOnly: true,
+                    fieldLabel: ''
+                },
+                {
+                    xtype: 'textfield',
+                    x: 550,
+                    y: 30,
+                    width: 90,
+                    id:'txtValida5Puesto1',
+                    readOnly: true,
+                    fieldLabel: ''
+                },
+                {
+                    xtype: 'textfield',
+                    x: 660,
+                    y: 110,
+                    width: 90,
+                    id:'txtValida6Puesto3',
+                    readOnly: true,
+                    fieldLabel: ''
+                },
+                {
+                    xtype: 'textfield',
+                    x: 660,
+                    y: 70,
+                    width: 90,
+                    id:'txtValida6Puesto2',
+                    readOnly: true,
+                    fieldLabel: ''
+                },
+                {
+                    xtype: 'textfield',
+                    x: 660,
+                    y: 30,
+                    width: 90,
+                    id:'txtValida6Puesto1',
+                    readOnly: true,
+                    fieldLabel: ''
+                },
+                {
+                    xtype: 'textfield',
+                    x: 770,
+                    y: 30,
+                    width: 90,
+                    id:'txtValida7Puesto1',
+                    readOnly: true,
+                    fieldLabel: ''
+                },
+                {
+                    xtype: 'textfield',
+                    x: 770,
+                    y: 110,
+                    width: 90,
+                    id:'txtValida7Puesto3',
+                    readOnly: true,
+                    fieldLabel: ''
+                },
+                {
+                    xtype: 'textfield',
+                    x: 770,
+                    y: 70,
+                    width: 90,
+                    id:'txtValida7Puesto2',
+                    readOnly: true,
+                    fieldLabel: ''
+                },
+                {
+                    xtype: 'textfield',
+                    x: 220,
+                    y: 110,
+                    width: 90,
+                    id:'txtValida2Puesto3',
+                    readOnly: true,
+                    fieldLabel: ''
+                },
+                {
+                    xtype: 'textfield',
+                    x: 550,
+                    y: 110,
+                    width: 90,
+                    id:'txtValida5Puesto3',
+                    readOnly: true,
+                    fieldLabel: ''
+                },
+                {
+                    xtype: 'textfield',
+                    x: 440,
+                    y: 30,
+                    width: 90,
+                    id:'txtValida4Puesto1',
+                    readOnly: true,
+                    fieldLabel: ''
+                },
+                {
+                    xtype: 'textfield',
+                    x: 330,
+                    y: 30,
+                    width: 90,
+                    id:'txtValida3Puesto1',
+                    readOnly: true,
+                    fieldLabel: ''
+                },
+                {
+                    xtype: 'textfield',
+                    x: 220,
+                    y: 30,
+                    width: 90,
+                    id:'txtValid2Puesto1',
+                    readOnly: true,
+                    fieldLabel: ''
+                },
+                {
+                    xtype: 'textfield',
+                    x: 10,
+                    y: 70,
+                    width: 190,
+                    id:'txtValida1Puesto1',
+                    readOnly: true,
+                    fieldLabel: 'Segundo'
+                },
+                {
+                    xtype: 'textfield',
+                    x: 10,
+                    y: 30,
+                    width: 190,
+                    
+                    id:'txtValida1Puesto2',
+                    name: 'primero',
+                    readOnly: true,
+                    fieldLabel: 'Primero'
+                },
+                {
+                    xtype: 'textfield',
+                    x: 10,
+                    y: 110,
+                    width: 190,
+                    id:'txtValida1Puesto3',
+                    readOnly: true,
+                    fieldLabel: 'Tercero'
+                },
+                {
+                    xtype: 'label',
+                    x: 2,
+                    y: -1,
+                    text: 'Lugar/Valida '
+                },
+                {
+                    xtype: 'label',
+                    x: 130,
+                    y: -1,
+                    text: 'Primera '
+                },
+                {
+                    xtype: 'label',
+                    x: 230,
+                    y: -1,
+                    text: 'Segunda '
+                },
+                {
+                    xtype: 'label',
+                    x: 340,
+                    y: -1,
+                    text: 'Tercera'
+                },
+                {
+                    xtype: 'label',
+                    x: 450,
+                    y: 0,
+                    text: 'Cuarta'
+                },
+                {
+                    xtype: 'label',
+                    x: 560,
+                    y: 0,
+                    text: 'Quinta'
+                },
+                {
+                    xtype: 'label',
+                    x: 670,
+                    y: 0,
+                    text: 'Sexta'
+                },
+                {
+                    xtype: 'label',
+                    x: 770,
+                    y: -2,
+                    text: 'Septima'
+                }
+            ]
+        },
+       
+     ]
+    });
+    
+    var main = Ext.define('App.miVentanaResultado', {
+            extend: 'Ext.window.Window',
+            
+            renderTo    :   "contenido",
+            title: 'Nuevo Banco',
+            closeAction :'hide',
+            closable    : false,
+            resizable   : false,
+            floatting   :   true,
+            //hidden        :   true,
+            x			:	30,
+	    y			:	20,
+	    border		:   true,
+            modal       :   false,
+            frame 		:   true,
+            height		:	370,
+            width		:	950,
+            items       :   [panel2]
+        });
+    
+//------------------------------------------------------------------------------
+    
+
+
+//---------------------------------Funciones------------------------------------
     
     
     //Funcion para registrar los datos de un banco
@@ -391,30 +762,31 @@ var filtersCfg = {
         encontrado=0;  
         if(ventana==null) 
             ventana = Ext.create ('App.miVentanaBanco')
-        limpiar();
+        
         ventana.show();
     }
     
     //Funcion que muestra el formulario y permite Actualizar
-    function editarFormulario(){
+    function verFormulario(){
         //Trae la grid para poder actualizar al editar
+        /*
         listadoCamposFormulario = Ext.getCmp('listadoCamposFormulario');
         if (listadoCamposFormulario.getSelectionModel().hasSelection()) {
             var row = listadoCamposFormulario.getSelectionModel().getSelection()[0];
-       
+       */
 
         encontrado=1;
-        if(ventana==null)  
-            ventana = Ext.create ('App.miVentanaBanco');
+        if(ventanaResultados==null)  
+            ventanaResultados = Ext.create ('App.miVentanaResultado');
 
         // Precarga el nombre e id seleccionados
-        Ext.getCmp('nombreBanco').setValue(row.get('nombre'));
-        Ext.getCmp('idBanco').setValue(row.get('id'));
+        //Ext.getCmp('nombreBanco').setValue(row.get('nombre'));
+        //Ext.getCmp('idBanco').setValue(row.get('id'));
 
 
-        ventana.show();
+        ventanaResultados.show();
         
-        }
+        
     }
 
     //Funcion que limpia los campos
@@ -427,6 +799,15 @@ var filtersCfg = {
     //Funcion que cierra la ventana emergente
     function cerrar(){
         ventana.close();
-        Ext.getCmp('editarBanco').setDisabled(true);
-        Ext.getCmp('eliminarBanco').setDisabled(true);
+        Ext.getCmp('verPollaJugada').setDisabled(true);
+        Ext.getCmp('eliminarPollaJugada').setDisabled(true);
+        Ext.getCmp('resultadoPollaJugada').setDisabled(true);
+    }
+    
+    function cerrarVer(){
+        ventanaResultados.close();
+        Ext.getCmp('verPollaJugada').setDisabled(true);
+        Ext.getCmp('eliminarPollaJugada').setDisabled(true);
+        Ext.getCmp('resultadoPollaJugada').setDisabled(true);
+                   
     }
