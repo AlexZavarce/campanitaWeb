@@ -428,13 +428,13 @@ var filtersCfg = {
                     title: 'Datos Basicos',
                     items: [
                         {
-                            xtype: 'textfield',
+                           xtype: 'textfield',
                             x: 10,
                             y: 10,
                             width: 300,
                             id:'txtNombre',
                             emptyText:'Escriba su nombre',
-                            maxLength: 5,
+                            maxLength: 10,
                             allowBlank: false,
                             fieldLabel: 'Nombre(*):'
                         },
@@ -548,7 +548,8 @@ var filtersCfg = {
                              x: 10,
                             y: 35,
                             width: 300,
-                            vtype:'email',
+                            name:'email',
+                            vtype: 'email',
                             emptyText:'Escriba su correo electronico',
                             allowBlank: false,
                             id:'txtCorreo',

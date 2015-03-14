@@ -23,7 +23,7 @@
     
     <script type="text/javascript" src="vista/pantallas/formularios/registrarPolla.js"></script>
      -->
-     <script type="text/javascript" src="vista/pantallas/formularios/registrarPollaValida.js"></script>
+     <script type="text/javascript" src="vista/pantallas/formularios/registrarUsuario.js"></script>
     
 
 </head>
