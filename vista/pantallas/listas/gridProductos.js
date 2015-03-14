@@ -72,7 +72,7 @@ var listadoCamposFormulario=Ext.create('Ext.grid.Panel', {
             displayMsg: 'Mostrando Contatos {0} - {1} de {2}',
             emptyMsg: "Nenhum contato encontrado."
         }];
-        
+    }
 
 });
 
