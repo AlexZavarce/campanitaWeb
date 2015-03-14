@@ -548,6 +548,7 @@ var filtersCfg = {
                              x: 10,
                             y: 35,
                             width: 300,
+                            vtype:'email',
                             emptyText:'Escriba su correo electronico',
                             allowBlank: false,
                             id:'txtCorreo',
