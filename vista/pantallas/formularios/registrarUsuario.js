@@ -1,5 +1,7 @@
 var encontrado = 0;
 var ventana=null;
+
+
 Ext.onReady(function() {
 
 
@@ -455,6 +457,9 @@ var filtersCfg = {
                             id:'txtFecha',
                             emptyText:'Escriba su fecha de nacimiento',
                             allowBlank: false,
+                            format:'Y-m-d',
+                            minValue: new Date(), //<-- min date is today
+                            value:new Date(),
                             fieldLabel: 'Fecha de Nacimiento:(*)'
                         },
                         {
@@ -523,7 +528,7 @@ var filtersCfg = {
                     xtype: 'fieldset',
                     x: 10,
                     y: 200,
-                    height: 150,
+                    height: 200,
                     width: 690,
                     layout: 'absolute',
                     title: 'Datos del Usuario',
@@ -540,36 +545,55 @@ var filtersCfg = {
                         },
                         {
                             xtype: 'textfield',
-                            x: 10,
-                            y: 42,
+                             x: 10,
+                            y: 35,
                             width: 300,
-                            id:'txtClave',
-                            inputType: 'password', 
-                            fieldLabel: 'Contraseña (*):'
+                            emptyText:'Escriba su correo electronico',
+                            allowBlank: false,
+                            id:'txtCorreo',
+                            fieldLabel: 'Correo Electronico (*):'
                         },
-                        {
+                      
+                           {
                             xtype: 'textfield',
                             x: 10,
                             y: 80,
                             width: 300,
+                            id:'txtClave',
+                            name:'txtClave',
+                            emptyText:'Escriba su contraseña',
+                            allowBlank: false,
+                            inputType: 'password', 
+                            fieldLabel: 'Contraseña (*):',
+                            listeners: {
+                                validitychange: function(field){
+                                    field.next().validate();
+                                },
+                                blur: function(field){
+                                    field.next().validate();
+                                }
+                             }
+                             },
+                        {
+                            xtype: 'textfield',
+                            x: 10,
+                            y: 115,
+                            width: 300,
                             id:'txtClave2',
                             inputType: 'password', 
-                            fieldLabel: 'Reescriba su Contraseña:',
-                            validator: function(fieldValue) 
-                                { 
-                                  if (fieldValue == frm.findField('password1').getValue()) 
-                                      return true; 
-                                  else 
-                                      return 'Please re-enter Password.'; 
-                                } 
+                            emptyText:'Escriba su contraseña',
+                            fieldLabel: 'Confirme su Contraseña:',
+                            initialPassField: 'txtClave'
+                                                        
                         },
                           {
                             xtype: 'filefield',
                             id: 'fotoUsuarioArchivo',
                             name:'ufile_Usuario[]',
                             x: 320,
-                            y: 80,
-                            buttonIcon: '../img/iconos/foto.ico',
+                            y: 120,
+                            emptyText:'Foto de perfil',
+                            allowBlank: false,
                             buttonText:'Seleccionar',
                             width: 340,
                             fieldLabel: 'Foto:',
@@ -586,8 +610,8 @@ var filtersCfg = {
                             y: 3,
                             id:'imagenUsuario',
                             src:'vista/img/foto.jpg',
-                            height:70,
-                            width: 80
+                            height:100,
+                            width: 100
                         }
                     ]
                 },
@@ -598,7 +622,7 @@ var filtersCfg = {
                             id:'lblDatosO',
                             text: '(*) Datos Obligatorios.',
                             x:10,
-                            y:355
+                            y:410
                 }
 
             ],
@@ -691,9 +715,11 @@ var filtersCfg = {
                             x: 320,
                             y: 10,
                             width: 300,
+                            emptyText:'Escriba su respuesta',
+                            allowBlank: false,
                             id:'txtRespuesta1',
                             fieldLabel: 'Respuesta Secreta:'
-                                                    },
+                             },
 
                         {
                             xtype: 'combobox',
@@ -721,6 +747,8 @@ var filtersCfg = {
                             y: 60,
                             width: 300,
                             id:'txtRespuesta2',
+                            emptyText:'Escriba su respuesta',
+                            allowBlank: false,
                             fieldLabel: 'Respuesta Secreta:'
                         },
 
@@ -730,81 +758,40 @@ var filtersCfg = {
                             y: 100,
                             width: 300,
                             id:'txtPregunta3',
-                            fieldLabel: 'Escriba su Pregunta Secreta (*):'
+                            emptyText:'Escriba su pregunta',
+                            allowBlank: false,
+                            fieldLabel: 'Pregunta Secreta (*):'
                         },
                         {
                             xtype: 'textfield',
                             x: 320,
                             y: 100,
                             width: 300,
+                            emptyText:'Escriba su respuesta',
+                            allowBlank: false,
                             id:'txtRespuesta3',
-                            fieldLabel: 'Escriba su Respuesta Secreta:'
+                            fieldLabel: 'Respuesta Secreta:'
                         }
                        
                     ]
                 },
-
-
-                  {
+                           {
                     xtype: 'fieldset',
                    x: 10,
                     y: 210,
                     height: 150,
                     width: 690,
                     layout: 'absolute',
-                    title: 'Datos Bancarios',
+                    title: '',
                     items: [
                      {
                             xtype: 'label',
                             id:'lblTitulo',
-                            text: 'Para poder realizar apuestas y poder efctuar el pago de la misma, debes registrar los siguientes datos.'
-                        },
-                        {
-                            xtype: 'combobox',
-                            width: 300,
-                            x: 10,
-                            y: 30,
-                            fieldLabel: 'Banco (*):',
-                            id : 'cmbBanco',
-                            store: comboBancoStore,
-                            valueField: 'id',
-                            displayField: 'nombre',   
-                            queryMode: 'remote',
-                            typeAhead: true,
-                            emptyText:'Seleccionar',
-                            triggerAction: 'all',
-                            editable: false,
-                            selecOnFocus: true
-
-                        },
-                        {
-                            xtype: 'numberfield',
-                            width: 300,
-                            x: 320,
-                            y: 25,
-                            id:'txtCuenta',
-                            fieldLabel: 'Numero de Cuenta (*)'
-                        },
-                           {
-                            xtype: 'numberfield',
-                            x: 10,
-                            y: 70,
-                            width: 300,
-                            id:'txtCedula',
-                            fieldLabel: 'Cedula (*):'
-                        },
-                         {
-                            xtype: 'textfield',
-                            x: 320,
-                            y: 65,
-                            width: 300,
-                            id:'txtCorreo',
-                            fieldLabel: 'Correo Electronico (*):'
+                            text: 'Para poder recuperar su contraseña debe guardar la informacion de las preguntas con sus respuestas.Primero debe seleccionar cualquiera de las preguntas establecidas por el administrador, en la tercera casilla debe colocar la pregunta de su prefencia. Recuerde que deden ser preguntas y respuestas que recuerde posteriormente para poder ingresar nuevamente al sistema en caso de que haya olvidado su clave. '
                         }
                        
                     ]
                 },
-
 
                   {
                             xtype: 'label',
@@ -871,12 +858,12 @@ var filtersCfg = {
             resizable   : false,
             floatting   :   true,
             //hidden        :   true,
-            x           :   200,
-            y           :   50,
+            x           :   150,
+            y           :   -120,
             border      :   true,
             modal       :   false,
             frame       :   true,
-            height: 490,
+            height: 540,
             width: 720,
             items       :   [panel]
         });
@@ -1058,14 +1045,12 @@ var filtersCfg = {
             Ext.getCmp('cmbCodigodeOperadora').setValue('');
             Ext.getCmp('txtCelular').setValue('');
             Ext.getCmp('txtNick').setValue('');
-            Ext.getCmp('txtClave').setValue('');
+            
             Ext.getCmp('txtPregunta3').setValue('');
             Ext.getCmp('txtRespuesta3').setValue('');
            
-            Ext.getCmp('cmbBanco').setValue('');
-            Ext.getCmp('txtCuenta').setValue('');
-            Ext.getCmp('txtCedula').setValue('');
-            Ext.getCmp('txtCorreo').setValue('');
+            
+           // Ext.getCmp('txtCorreo').setValue('');
        
     }
 
