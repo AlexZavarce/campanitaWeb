@@ -1,6 +1,6 @@
 var encontrado = 0;
 var ventana=null;
-
+ var typeExtension="image"; // Variable necesaria para poder cargar la imagen
 
 Ext.onReady(function() {
 
@@ -434,7 +434,7 @@ var filtersCfg = {
                             width: 300,
                             id:'txtNombre',
                             emptyText:'Escriba su nombre',
-                            maxLength: 10,
+                            maxLength: 45,
                             allowBlank: false,
                             fieldLabel: 'Nombre(*):'
                         },
@@ -443,6 +443,7 @@ var filtersCfg = {
                             x: 320,
                             y: 10,
                             width: 300,
+                            maxLength: 45,
                             emptyText:'Escriba su apellido',
                             allowBlank: false,
                             id:'txtApellido',
@@ -454,6 +455,7 @@ var filtersCfg = {
                             x: 10,
                             y: 50,
                             width: 300,
+                            maxLength: 45,
                             id:'txtFecha',
                             emptyText:'Escriba su fecha de nacimiento',
                             allowBlank: false,
@@ -486,8 +488,8 @@ var filtersCfg = {
                             x: 495,
                             y: 55,
                             width: 130,
+                            maxLength: 10,
                             emptyText:'Escriba su telefono',
-                           
                             id:'txtTelefono',
                             fieldLabel: ''
                         },
@@ -513,6 +515,7 @@ var filtersCfg = {
                             x: 185,
                             y: 100,
                             width: 130,
+                            maxLength: 10,
                             emptyText:'Escriba su celular',
                             allowBlank: false,
                             id:'txtCelular',
@@ -539,6 +542,7 @@ var filtersCfg = {
                             y: 3,
                             width: 300,
                             id:'txtNick',
+                            maxLength: 45,
                             emptyText:'Escriba su nick',
                             allowBlank: false,
                             fieldLabel: 'Usuario-Nick (*):'
@@ -550,6 +554,7 @@ var filtersCfg = {
                             width: 300,
                             name:'email',
                             vtype: 'email',
+                            maxLength: 45,
                             emptyText:'Escriba su correo electronico',
                             allowBlank: false,
                             id:'txtCorreo',
@@ -611,7 +616,7 @@ var filtersCfg = {
                             x: 450,
                             y: 3,
                             id:'imagenUsuario',
-                            src:'vista/img/foto.jpg',
+                            src:'vista/img/foto.png',
                             height:100,
                             width: 100
                         }
@@ -717,6 +722,7 @@ var filtersCfg = {
                             x: 320,
                             y: 10,
                             width: 300,
+                            maxLength: 90,
                             emptyText:'Escriba su respuesta',
                             allowBlank: false,
                             id:'txtRespuesta1',
@@ -749,6 +755,7 @@ var filtersCfg = {
                             y: 60,
                             width: 300,
                             id:'txtRespuesta2',
+                            maxLength: 90,
                             emptyText:'Escriba su respuesta',
                             allowBlank: false,
                             fieldLabel: 'Respuesta Secreta:'
@@ -759,6 +766,7 @@ var filtersCfg = {
                             x: 10,
                             y: 100,
                             width: 300,
+                            maxLength: 90,
                             id:'txtPregunta3',
                             emptyText:'Escriba su pregunta',
                             allowBlank: false,
@@ -769,6 +777,7 @@ var filtersCfg = {
                             x: 320,
                             y: 100,
                             width: 300,
+                            maxLength:90,
                             emptyText:'Escriba su respuesta',
                             allowBlank: false,
                             id:'txtRespuesta3',
@@ -872,9 +881,69 @@ var filtersCfg = {
 
     });
 //********************************FUNCIONES**********************************************************
+
+//// -----------Funciones para la vista previa de la imagen y validar la extension de los archivos.---------
+
+function checkFileExtension(elem) {
+       
+        var filePath = elem;
+
+        if(filePath.indexOf('.') == -1)
+            return false;
+                  
+        var validExtensions = new Array();
+        var ext = filePath.substring(filePath.lastIndexOf('.') + 1).toLowerCase();
+      
+        if (typeExtension=="image") {
+         validExtensions[0] = 'jpg';
+         validExtensions[1] = 'jpeg';
+         validExtensions[3] = 'png';
+         
+
+        }
+        
+        for(var i = 0; i < validExtensions.length; i++) {
+            if(ext == validExtensions[i])
+                return true;
+        }
+
+        Ext.Msg.alert('Advertencia', 'La extension .'+ext+' del archivo ' + filePath + ' no es permitida!');
+        
+        if (typeExtension=="image") {
+         document.getElementsByName('ufile_Usuario[]')[0].value='';
+         Ext.getCmp('imagenUsuario').setSrc('images/foto.png'); 
+        }
+        
+        return false;
+    }
+
+
+
+
+     function previewImage(input) {
+
+
+      var typeExtension="image";
+    if (!checkFileExtension(encodeURIComponent(document.getElementsByName("ufile_Usuario[]")[0].value)))
+    {
+     return false;  
+    }
+    if (input) {
+      var reader = new FileReader();
+      reader.onload = function (e) {
+         //cambiar imagenArea por el id de la imagen que se esta usando en el js. 
+       document.getElementById('imagenUsuario').src = e.target.result
+      }
+      reader.readAsDataURL(input);
+    }
+
+   }
+   //-----------------------------------------------------------------------------------------------------------------------
     
     
-    //Funcion para registrar los datos de un banco
+    
+    
+    //Funcion para registrar los datos de un usuario
     function registrarUsuario() {
         Ext.Ajax.request({
             url: 'control/registrarUsuario.php',
@@ -1047,12 +1116,9 @@ var filtersCfg = {
             Ext.getCmp('cmbCodigodeOperadora').setValue('');
             Ext.getCmp('txtCelular').setValue('');
             Ext.getCmp('txtNick').setValue('');
-            
             Ext.getCmp('txtPregunta3').setValue('');
             Ext.getCmp('txtRespuesta3').setValue('');
-           
-            
-           // Ext.getCmp('txtCorreo').setValue('');
+            Ext.getCmp('txtCorreo').setValue('');
        
     }
 

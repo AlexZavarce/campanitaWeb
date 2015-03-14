@@ -3,10 +3,7 @@ include_once("../modelo/Usuario.php");
 
 $Usuario = new Usuario();
 
-$id_grupo=$_GET['grupo'];
 
-$id_banco=$_GET['banco'];
-$cuenta=$_GET['cuenta'];
 
 
 $cedula=$_GET['cedula'];
@@ -34,7 +31,7 @@ $respuesta_secreta2=$_GET['respuesta_secreta1'];
 
 
 
-$banco->nuevoUsuario("http://localhost/backendCampanitaWeb/controller/Broker.php?servicioSolicitado=usuario/ingresar&id_grupo=".$id_grupo."&cuenta=".$cuenta."&id_banco=".$id_banco."&cedula=".$cedula."&nombre=".$nombre."&apellido=".$apellido."&fecha_nacimiento=".$fecha_nacimiento."&codigo_area=".$codigo_area."&telefono=".$telefono."&codigo_operadora=".$codigo_operadora."&celular=".$celular."&correo=".$correo."&login=".$login."&password=".$password."&foto=".$foto."&pregunta_secreta=".$pregunta_secreta."&respuesta_secreta=".$respuesta_secreta."&intentos=".$intentos."&pregunta1=".$id_pregunta1."&respuesta_secreta1=".$respuesta_secreta1."&pregunta2=".$id_pregunta2."&respuesta_secreta2=".$respuesta_secreta2."&estatus=".$estatus);
+$banco->nuevoUsuario("http://localhost/backendCampanitaWeb/controller/Broker.php?servicioSolicitado=usuario/ingresar&cedula=".$cedula."&nombre=".$nombre."&apellido=".$apellido."&fecha_nacimiento=".$fecha_nacimiento."&codigo_area=".$codigo_area."&telefono=".$telefono."&codigo_operadora=".$codigo_operadora."&celular=".$celular."&correo=".$correo."&login=".$login."&password=".$password."&foto=".$foto."&pregunta_secreta=".$pregunta_secreta."&respuesta_secreta=".$respuesta_secreta."&intentos=".$intentos."&pregunta1=".$id_pregunta1."&respuesta_secreta1=".$respuesta_secreta1."&pregunta2=".$id_pregunta2."&respuesta_secreta2=".$respuesta_secreta2."&estatus=".$estatus);
 
 
 //echo $data;
