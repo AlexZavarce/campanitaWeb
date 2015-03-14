@@ -1,7 +1,8 @@
 var encontrado = 0;
 var ventana=null;
 var ventanaResultados=null;
-
+var storeValida;
+var Titulo="dasdas";
 Ext.onReady(function() {
 
 //  Class which shows invisible file input field.
@@ -19,6 +20,63 @@ Ext.onReady(function() {
             buttons: Ext.Msg.OK
         });
     };
+    
+    //----------------------STORE DE EMERGENTE----------------------------------
+    
+            Ext.define('gridResultadosValida', {
+                extend: 'Ext.data.Model',
+                fields: [
+                    {name:'id', type:'int'},
+                    {name:'polla.hipodromos.nombre', type:'string'},
+                    {name:'nro_valida', type:'int'},
+                    {name:'primero', type:'int'},
+                    {name:'segundo', type:'int'},
+                    {name:'tercero', type:'int'},
+                    {name: 'nro_carrera_text', type: 'string', convert: function(v,record)
+                        {
+                            if(record.get('nro_valida')==1)
+                                return  "Primero";
+                            else if(record.get('nro_valida')==2)
+                                return  "Segundo";
+                            else if(record.get('nro_valida')==3)
+                                return  "Tercero";
+                            else if(record.get('nro_valida')==4)
+                                return  "Cuarto";
+                            else if(record.get('nro_valida')==5)
+                                return  "Quinto";
+                            else if(record.get('nro_valida')==6)
+                                return  "Sexto";
+                            else if(record.get('nro_valida')==7)
+                                return  "Septimo";
+                        }
+                    },
+                
+                    {name:'estatus', type:'int'},
+                    
+
+                ] 
+        });
+
+
+            storeValida = Ext.create('Ext.data.Store', {
+            model: 'gridResultadosValida',
+            autoLoad: true,
+            proxy: {
+
+                type: 'ajax',
+                url: 'control/buscarValida.php', 
+
+                reader: { 
+                    type: 'json',
+                    root: 'validas',
+                    totalProperty: 'total',
+
+                }
+            }
+        });
+                                            
+    //--------------------------------------------------------------------------                              
+                                            
 //-------------------------LISTA DEL PRINCIPIO----------------------------------
 
     Ext.define('gridPollaJugada', {
@@ -53,16 +111,7 @@ Ext.onReady(function() {
         }
     });
 
-//storeBanco.load({params:{start:0, limit:12}});
-//storeBanco.filter("estatus",1);
-var filtersCfg = {
-        ftype: 'filters',
-        local: true,
-        filters: [{
-                type: 'string',
-                dataIndex: 'nombre'
-            }]
-    };
+
 
     var listadoCamposFormulario=Ext.create('Ext.grid.Panel', {
     store: store,
@@ -135,7 +184,7 @@ var filtersCfg = {
                 disabled: true,
                
                 handler: function (){
-                    verFormulario()
+                    mostrarResultado()
                 }
             },{
                 iconCls: 'myimagebuttonborrar',
@@ -320,55 +369,76 @@ var filtersCfg = {
             items       :   [panel]
         });
 
-    });
 
 //------------------------------------------------------------------------------
 
 //-----------------------Panel para Mostrar Resultados--------------------------
   
-    var panel2 = Ext.create('Ext.form.Panel', {
-        height: 370,
-        width: 950,
-        frame: false,
-        collapsible: false,
-        collapsed: false,
-        closable: false,
-        //title: 'ADICIONAR DOCUMENTO',
-        //bodyPadding: '10 10 0',
-
-        defaults: {
-            anchor: '100%',
-            allowBlank: false,
-            msgTarget: 'side',
-            labelWidth: 70
-        },
-
-    items: [
-    {
-            xtype: 'toolbar',
-            items: [{
-                 iconCls : 'myimagebuttonguardar',
-                itemId: 'aceptar',
-                height:30,
-                width:100,
-              
-                text: 'Guardar',
-                action: 'add',
-                handler: function (){
-                  
+  
+    var listadoCamposFormulario2=Ext.create('Ext.grid.Panel', {
+    store: storeValida,
+    id: 'listado',
+    layout:'fit',
+    requires: ['Ext.toolbar.Paging'],
+        listeners : {
+                itemdblclick: function(dv, record, item, index, e) {
+                    record = listadoCamposFormulario2.getStore().getAt(index);
+                    Ext.Msg.alert('Banco','Title: '+record.get('nombre')); //alert temporal
+                }, 
+                itemclick: function(dv, record, item, index, e) {
+                   
+                   
+                   
                 }
             },
+    columns:[
+               {
+                    id:'id',
+                    header: 'id', 
+                    width: 0, 
+                    sortable: true,
+                    hidden: true,
+                    flex:0,
+                    dataIndex: 'id'
+               },
+               {
+                    text: 'Valida',
+                    width: 260,
+                    dataIndex: 'nro_carrera_text',
+                    hidden: false,
+                    flex:2,
+                    sorteable: true
+                },
+                {
+                    text: 'Primero',
+                    width: 260,
+                    dataIndex: 'primero',
+                    hidden: false,
+                    flex:1,
+                    sorteable: true
+                },
+                {
+                    text: 'Segundo',
+                    width: 260,
+                    dataIndex: 'segundo',
+                    hidden: false,
+                    flex:1,
+                    sorteable: true
+                },
+                {
+                    text: 'Tercero',
+                    width: 260,
+                    dataIndex: 'tercero',
+                    hidden: false,
+                    flex:1,
+                    sorteable: true
+                }
+                
+            ],
+    dockedItems: [
             {
-                iconCls : 'myimagebuttonlimpiar',
-                height:30,
-                width:100,
-                itemId: 'limpiar',
-                text: 'Limpiar',
-                action: 'editar',
-                handler: function (){
-                    
-                }
-            },
+            xtype: 'toolbar',
+            items: [
             {
                 iconCls : 'myimagebuttonsalir',
                
@@ -381,295 +451,19 @@ var filtersCfg = {
                 }
             }]
         },
-        {
-            xtype: 'fieldset',
-            x: 10,
-            y: 10,
-            height: 60,
-            width: 340,
-            layout: 'absolute',
-            title: '',
-            items: [
-                {
-                    xtype: 'textfield',
-                    x: 20,
-                    y: 10,
-                    width: 280,
-                    fieldLabel: 'Hipodromo',
-                    readOnly: true
+   
+    ],
 
-                },
-                {
-                    xtype: 'textfield',
-                    x: 340,
-                    y: 10,
-                    width: 280,
-                    
-                    fieldLabel: 'Fecha de Jugada',
-                    readOnly: true
 
-                }
-            ]
-        },
-        {
-            xtype: 'fieldset',
-            x: 10,
-            y: 10,
-            height: 180,
-            
-            layout: 'absolute',
-            title: 'Polla',
-            items: [
-                {
-                    xtype: 'textfield',
-                    x: 220,
-                    y: 70,
-                    id:'txtValida2Puesto2',
-                    width: 90,
-                    readOnly: true,
-                    fieldLabel: ''
-                },
-                {
-                    xtype: 'textfield',
-                    x: 330,
-                    y: 70,
-                    width: 90,
-                    id:'txtValida3Puesto2',
-                    readOnly: true,
-                    fieldLabel: ''
-                },
-                {
-                    xtype: 'textfield',
-                    x: 330,
-                    y: 110,
-                    width: 90,
-                    id:'txtValida3Puesto3',
-                    readOnly: true,
-                    fieldLabel: ''
-                },
-                {
-                    xtype: 'textfield',
-                    x: 440,
-                    y: 70,
-                    width: 90,
-                    id:'txtValida4Puesto2',
-                    readOnly: true,
-                    fieldLabel: ''
-                },
-                {
-                    xtype: 'textfield',
-                    x: 440,
-                    y: 110,
-                    width: 90,
-                    id:'txtValida4Puesto3',
-                    readOnly: true,
-                    fieldLabel: ''
-                },
-                {
-                    xtype: 'textfield',
-                    x: 550,
-                    y: 70,
-                    width: 90,
-                    id:'txtValida5Puesto2',
-                    readOnly: true,
-                    fieldLabel: ''
-                },
-                {
-                    xtype: 'textfield',
-                    x: 550,
-                    y: 30,
-                    width: 90,
-                    id:'txtValida5Puesto1',
-                    readOnly: true,
-                    fieldLabel: ''
-                },
-                {
-                    xtype: 'textfield',
-                    x: 660,
-                    y: 110,
-                    width: 90,
-                    id:'txtValida6Puesto3',
-                    readOnly: true,
-                    fieldLabel: ''
-                },
-                {
-                    xtype: 'textfield',
-                    x: 660,
-                    y: 70,
-                    width: 90,
-                    id:'txtValida6Puesto2',
-                    readOnly: true,
-                    fieldLabel: ''
-                },
-                {
-                    xtype: 'textfield',
-                    x: 660,
-                    y: 30,
-                    width: 90,
-                    id:'txtValida6Puesto1',
-                    readOnly: true,
-                    fieldLabel: ''
-                },
-                {
-                    xtype: 'textfield',
-                    x: 770,
-                    y: 30,
-                    width: 90,
-                    id:'txtValida7Puesto1',
-                    readOnly: true,
-                    fieldLabel: ''
-                },
-                {
-                    xtype: 'textfield',
-                    x: 770,
-                    y: 110,
-                    width: 90,
-                    id:'txtValida7Puesto3',
-                    readOnly: true,
-                    fieldLabel: ''
-                },
-                {
-                    xtype: 'textfield',
-                    x: 770,
-                    y: 70,
-                    width: 90,
-                    id:'txtValida7Puesto2',
-                    readOnly: true,
-                    fieldLabel: ''
-                },
-                {
-                    xtype: 'textfield',
-                    x: 220,
-                    y: 110,
-                    width: 90,
-                    id:'txtValida2Puesto3',
-                    readOnly: true,
-                    fieldLabel: ''
-                },
-                {
-                    xtype: 'textfield',
-                    x: 550,
-                    y: 110,
-                    width: 90,
-                    id:'txtValida5Puesto3',
-                    readOnly: true,
-                    fieldLabel: ''
-                },
-                {
-                    xtype: 'textfield',
-                    x: 440,
-                    y: 30,
-                    width: 90,
-                    id:'txtValida4Puesto1',
-                    readOnly: true,
-                    fieldLabel: ''
-                },
-                {
-                    xtype: 'textfield',
-                    x: 330,
-                    y: 30,
-                    width: 90,
-                    id:'txtValida3Puesto1',
-                    readOnly: true,
-                    fieldLabel: ''
-                },
-                {
-                    xtype: 'textfield',
-                    x: 220,
-                    y: 30,
-                    width: 90,
-                    id:'txtValid2Puesto1',
-                    readOnly: true,
-                    fieldLabel: ''
-                },
-                {
-                    xtype: 'textfield',
-                    x: 10,
-                    y: 70,
-                    width: 190,
-                    id:'txtValida1Puesto1',
-                    readOnly: true,
-                    fieldLabel: 'Segundo'
-                },
-                {
-                    xtype: 'textfield',
-                    x: 10,
-                    y: 30,
-                    width: 190,
-                    
-                    id:'txtValida1Puesto2',
-                    name: 'primero',
-                    readOnly: true,
-                    fieldLabel: 'Primero'
-                },
-                {
-                    xtype: 'textfield',
-                    x: 10,
-                    y: 110,
-                    width: 190,
-                    id:'txtValida1Puesto3',
-                    readOnly: true,
-                    fieldLabel: 'Tercero'
-                },
-                {
-                    xtype: 'label',
-                    x: 2,
-                    y: -1,
-                    text: 'Lugar/Valida '
-                },
-                {
-                    xtype: 'label',
-                    x: 130,
-                    y: -1,
-                    text: 'Primera '
-                },
-                {
-                    xtype: 'label',
-                    x: 230,
-                    y: -1,
-                    text: 'Segunda '
-                },
-                {
-                    xtype: 'label',
-                    x: 340,
-                    y: -1,
-                    text: 'Tercera'
-                },
-                {
-                    xtype: 'label',
-                    x: 450,
-                    y: 0,
-                    text: 'Cuarta'
-                },
-                {
-                    xtype: 'label',
-                    x: 560,
-                    y: 0,
-                    text: 'Quinta'
-                },
-                {
-                    xtype: 'label',
-                    x: 670,
-                    y: 0,
-                    text: 'Sexta'
-                },
-                {
-                    xtype: 'label',
-                    x: 770,
-                    y: -2,
-                    text: 'Septima'
-                }
-            ]
-        },
-       
-     ]
-    });
+});
+
+  
     
-    var main = Ext.define('App.miVentanaResultado', {
+    var main2 = Ext.define('App.miVentanaResultado', {
             extend: 'Ext.window.Window',
-            
+             layout      :   "card",
             renderTo    :   "contenido",
-            title: 'Nuevo Banco',
+            title: Titulo,
             closeAction :'hide',
             closable    : false,
             resizable   : false,
@@ -678,13 +472,14 @@ var filtersCfg = {
             x			:	30,
 	    y			:	20,
 	    border		:   true,
-            modal       :   false,
+            modal               :   false,
             frame 		:   true,
             height		:	370,
-            width		:	950,
-            items       :   [panel2]
+            width		:	500,
+            items       :   listadoCamposFormulario2
         });
     
+    });
 //------------------------------------------------------------------------------
     
 
@@ -765,7 +560,30 @@ var filtersCfg = {
         
         ventana.show();
     }
-    
+
+    //Funcion que muestra el formulario y permite Actualizar
+    function mostrarResultado(){
+        //Trae la grid para poder actualizar al editar
+        listadoCamposFormulario = Ext.getCmp('listadoCamposFormulario');
+        if (listadoCamposFormulario.getSelectionModel().hasSelection()) {
+            var row = listadoCamposFormulario.getSelectionModel().getSelection()[0];
+                        encontrado=1;
+                        
+                        Titulo = "Resultados de la Polla deL Hipodromo "+row.get('pollas.hipodromos.nombre');
+                       
+                      
+                        if(ventanaResultados==null)  
+                            ventanaResultados = Ext.create ('App.miVentanaResultado');
+                        
+                        ventanaResultados.setTitle(Titulo);
+                        //Recarga Grid con las validas de la polla que es
+                        storeValida.load({params:{id_polla: row.get('pollas.id')}});
+                        ventanaResultados.show();
+
+        }
+    }
+
+
     //Funcion que muestra el formulario y permite Actualizar
     function verFormulario(){
         //Trae la grid para poder actualizar al editar

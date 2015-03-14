@@ -50,6 +50,13 @@ class Usuario{
 		$data = file_get_contents($url);
 		echo $data;
 	}
+        
+        
+        function mandarArray($url){		
+		$data = file_get_contents($url);
+		
+                echo $data;
+	}
 
 	
 }//Fin de la Class Usuario
