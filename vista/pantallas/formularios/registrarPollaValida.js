@@ -233,7 +233,7 @@ Ext.onReady(function() {
                 renderTo    :   "contenido",
                 layout      :   "card",
                 floatting   :   true,
-                title       :   "Banco",
+                title       :   "Pollas en Juego",
                 closeAction :'hide',
                 closable    : false,
                 resizable   : false,
@@ -297,6 +297,12 @@ Ext.onReady(function() {
                     emptyText:'Seleccionar',
                     triggerAction: 'all',
                     editable: false,
+                     listeners: {
+                       select: function (cmb, record, index){
+                           validarRegistro()
+                           //Ext.Msg.alert("Error", "dasd no conectado");
+                       },  
+                     },
                     selecOnFocus: true
                     
                 }
@@ -365,12 +371,12 @@ Ext.onReady(function() {
                 
                 text: 'Guardar',
                 handler: function (){
-                    if(encontrado=0){
-                        registrarBanco()                                
-                    }
-                    else{
-                        actualizarBanco()
-                    }
+                    //if(encontrado=0){
+                       registrarValida()                              
+                    //}
+                    //else{
+                        //actualizarBanco()
+                    //}
                 }
             },
             {
@@ -381,7 +387,7 @@ Ext.onReady(function() {
                 text: 'Limpiar',
                 action: 'editar',
                 handler: function (){
-                    
+                    limpiar()
                 }
             },
             {
@@ -400,7 +406,7 @@ Ext.onReady(function() {
             extend: 'Ext.window.Window',
             id: 'miVentanaBanco',
             renderTo    :   "contenido",
-            title: 'Nuevo Banco',
+            title: 'Nueva Valida',
             closeAction :'hide',
             closable    : false,
             resizable   : false,
@@ -636,34 +642,16 @@ Ext.onReady(function() {
     }
 
 
-    //Funcion que muestra el formulario y permite Actualizar
-    function verFormulario(){
-        //Trae la grid para poder actualizar al editar
-        /*
-        listadoCamposFormulario = Ext.getCmp('listadoCamposFormulario');
-        if (listadoCamposFormulario.getSelectionModel().hasSelection()) {
-            var row = listadoCamposFormulario.getSelectionModel().getSelection()[0];
-       */
 
-        encontrado=1;
-        if(ventanaResultados==null)  
-            ventanaResultados = Ext.create ('App.miVentanaResultado');
-
-        // Precarga el nombre e id seleccionados
-        //Ext.getCmp('nombreBanco').setValue(row.get('nombre'));
-        //Ext.getCmp('idBanco').setValue(row.get('id'));
-
-
-        ventanaResultados.show();
-        
-        
-    }
-
-    //Funcion que limpia los campos
+    //Funcion que limpia los campos de la pantalla registrar Valida
     function limpiar(){
-
-        // Ext.getCmp('nombreBanco').setValue('');
-        // Ext.getCmp('idBanco').setValue('');    
+            //Ext.getCmp('id_polla_valida').setValue(0);
+            Ext.getCmp('cmbValida').setValue('');
+            Ext.getCmp('idPrimerLugar').setValue('');
+            Ext.getCmp('idSegundoLugar').setValue('');
+            Ext.getCmp('idTercerLugar').setValue('');
+                
+ 
     }
 
     //Funcion que cierra la ventana emergente
@@ -681,3 +669,67 @@ Ext.onReady(function() {
         Ext.getCmp('resultadoPollaJugada').setDisabled(true);
                    
     }
+    
+    //Funcion para Validar si la valida ya fue registrada
+    function validarRegistro() {
+        Ext.Ajax.request({
+            url: 'control/buscarValidaPolla.php',
+            method: 'GET',
+            params: {
+                ajax: 'true',
+                id_polla: Ext.getCmp('id_polla_valida').getValue(),
+                nro_valida: Ext.getCmp('cmbValida').getValue(),
+            },
+            //Retorno exitoso de la pagina servidora a traves del formato JSON
+            success: function( resultado, request ) {
+            datos = Ext.JSON.decode(resultado.responseText);
+                if (datos.exito=="true") {
+                    Ext.getCmp('idPrimerLugar').setValue(datos.validas.primero);
+                    Ext.getCmp('idSegundoLugar').setValue(datos.validas.segundo);
+                    Ext.getCmp('idTercerLugar').setValue(datos.validas.tercero);
+                     Ext.Msg.alert("Error", "Valida ya Registrada");
+                     encontrado=1;
+                }
+                else{
+                    
+                }
+            },
+            //No hay retorno de la pagina servidora
+            failure: function() {
+                Ext.Msg.alert("Error", "Servidor no conectado");
+            }
+        });
+    }
+    
+    
+    
+    //Funcion para Registrar una nueva Valida
+    function registrarValida() {
+        Ext.Ajax.request({
+            url: 'control/registrarValida.php',
+            method: 'GET',
+            params: {
+                ajax: 'true',
+                id_polla: Ext.getCmp('id_polla_valida').getValue(),
+                nro_valida: Ext.getCmp('cmbValida').getValue(),
+                primero: Ext.getCmp('idPrimerLugar').getValue(),
+                segundo: Ext.getCmp('idSegundoLugar').getValue(),
+                tercero: Ext.getCmp('idTercerLugar').getValue(),
+                estatus: 1,
+            },
+            //Retorno exitoso de la pagina servidora a traves del formato JSON
+            success: function( resultado, request ) {
+            datos = Ext.JSON.decode(resultado.responseText);
+                if (datos.exito) {
+                    Ext.Msg.alert('Atención', datos.msg);
+                    cerrar();
+                    limpiar();
+                }
+            },
+            //No hay retorno de la pagina servidora
+            failure: function() {
+                Ext.Msg.alert("Error", "Servidor no conectado");
+            }
+        });
+    }
+    
