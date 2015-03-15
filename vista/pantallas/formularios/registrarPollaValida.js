@@ -21,6 +21,25 @@ Ext.onReady(function() {
         });
     };
     
+    //---------------------STORE DE COMBO VALIDA--------------------------------
+   
+    
+    var storeComboValida = Ext.create('Ext.data.Store', {
+        fields: ['id', 'nombre'],
+        data : [
+            {"id":"1", "nombre":"Primera"},
+            {"id":"2", "nombre":"Segunda"},
+            {"id":"3", "nombre":"Tercera"},
+            {"id":"4", "nombre":"Cuarta"},
+            {"id":"5", "nombre":"Quinta"},
+            {"id":"6", "nombre":"Sexta"},
+            {"id":"7", "nombre":"Septima"}
+            //...
+        ]
+    });
+    
+    //--------------------------------------------------------------------------
+    
     //----------------------STORE DE EMERGENTE----------------------------------
     
             Ext.define('gridResultadosValida', {
@@ -268,8 +287,18 @@ Ext.onReady(function() {
                     x: 5,
                     y: 0,
                     width: 300,
-                    emptyText:' Seleccionar',
-                    fieldLabel: 'Valida a Registrar:'
+                    id: 'cmbValida',
+                    store: storeComboValida, 
+                    fieldLabel: 'Valida a Registrar:',
+                    valueField: 'id',
+                    displayField: 'nombre',   
+                    queryMode: 'remote',
+                    typeAhead: true,
+                    emptyText:'Seleccionar',
+                    triggerAction: 'all',
+                    editable: false,
+                    selecOnFocus: true
+                    
                 }
             ]
         },
@@ -283,27 +312,45 @@ Ext.onReady(function() {
             title: 'Resultados',
             items: [
                 {
-                    xtype: 'textfield',
+                    xtype: 'numberfield',
                     x: 5,
                     y: 18,
-                    width: 165,
+                    width: 180,
                     emptyText:' Primero',
+                    maxLength:2,
+                    id: 'idPrimerLugar',
                     fieldLabel: 'Ganadores'
                 },
                 {
-                    xtype: 'textfield',
-                    x: 215,
+                    xtype: 'numberfield',
+                    x: 210,
                     y: 18,
-                    width: 65,
+                    width: 80,
                     emptyText:' Segundo',
+                    maxLength:2,
+                    id: 'idSegundoLugar',
                     fieldLabel: ''
                 },
                 {
-                    xtype: 'textfield',
-                    x: 325,
+                    xtype: 'numberfield',
+                    x: 315,
                     y: 18,
-                    width: 65,
+                    width: 80,
                     emptyText:' Tercero',
+                    maxLength:2,
+                   
+                    id: 'idTercerLugar',
+                    fieldLabel: ''
+                },
+                {
+                    xtype: 'numberfield',
+                    x: 315,
+                    y: 30,
+                    width: 80,
+                    id: 'id_polla_valida',
+                    emptyText: 'id',
+                    hidden:true,
+                    maxLength:2,
                     fieldLabel: ''
                 }
             ]
@@ -553,6 +600,11 @@ Ext.onReady(function() {
     //Funcion que muestra el formulario y permite Registrar
     function mostrarFormulario(){
         var acum;    
+        listadoCamposFormulario = Ext.getCmp('listadoCamposFormulario');
+        if (listadoCamposFormulario.getSelectionModel().hasSelection())
+            var row = listadoCamposFormulario.getSelectionModel().getSelection()[0];
+                Ext.getCmp('id_polla_valida').setValue(row.get('pollas.id'));
+  
         //variable que permite saber que es un registrar
         encontrado=0;  
         if(ventana==null) 
