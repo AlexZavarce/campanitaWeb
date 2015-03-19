@@ -1,5 +1,6 @@
 var encontrado = 0;
 var ventana=null;
+var ventanaRetirado=null;
 var ventanaResultados=null;
 var storeValida;
 var Titulo="dasdas";
@@ -147,6 +148,7 @@ Ext.onReady(function() {
                     Ext.getCmp('eliminarPollaJugada').setDisabled(false);
                     Ext.getCmp('resultadoPollaJugada').setDisabled(false);
                    
+                    Ext.getCmp('retiradoPollaJugada').setDisabled(false);
                    
                 }
             },
@@ -186,9 +188,9 @@ Ext.onReady(function() {
                 iconCls: 'myimagebuttonnuevo',
               
                 height:30,
-                width:100,
+                width:150,
                 id: 'resultadoPollaJugada',
-                text: 'Resultado',
+                text: 'Registrar Valida',
                 disabled: true,
                 handler: function (){
                     mostrarFormulario()
@@ -197,15 +199,29 @@ Ext.onReady(function() {
                 iconCls: 'icon-save',
                
                 height:30,
-                width:100,
-                text: 'Ver',
+                width:150,
+                text: 'Ver Resultados',
                 id: 'verPollaJugada',
                 disabled: true,
                
                 handler: function (){
                     mostrarResultado()
                 }
-            },{
+            },
+            {
+                iconCls: '',
+               
+                height:30,
+                width:150,
+                text: 'Retirar',
+                id: 'retiradoPollaJugada',
+                disabled: true,
+               
+                handler: function (){
+                    mostrarFormularioRetirado()
+                }
+            },
+            {
                 iconCls: 'myimagebuttonborrar',
                 height:30,
                 width:100,
@@ -213,7 +229,8 @@ Ext.onReady(function() {
                 id: 'eliminarPollaJugada',
                 text: 'Eliminar',
                 action: 'delete'
-            }]
+            }
+        ]
         },
          {
             xtype: 'pagingtoolbar',
@@ -246,7 +263,7 @@ Ext.onReady(function() {
                 x           :   30,
                 y           :   20,
                 height      :   375,
-                width       :   550,
+                width       :   850,
                
                 items       :   listadoCamposFormulario
                     
@@ -425,12 +442,158 @@ Ext.onReady(function() {
 
 //------------------------------------------------------------------------------
 
+
+//-----------------------Panel para Registrar Retirados---------------------------
+
+    var panel3 = Ext.create('Ext.form.Panel', {
+        //renderTo: 'fi-form',
+        height: 225,
+        width: 445,
+        layout: 'absolute',
+    
+
+        defaults: {
+            
+            allowBlank: false,
+            msgTarget: 'side',
+            labelWidth: 70
+        },
+
+        items: [{
+            xtype: 'fieldset',
+            y:50,
+            x:10,
+            height: 50,
+            width: 420,
+            layout: 'absolute',
+            title: '',
+            items: [
+                {
+                    xtype: 'combobox',
+                    x: 5,
+                    y: 0,
+                    width: 300,
+                    id: 'cmbValidaRetirado',
+                    store: storeComboValida, 
+                    fieldLabel: 'Valida :',
+                    valueField: 'id',
+                    displayField: 'nombre',   
+                    queryMode: 'remote',
+                    typeAhead: true,
+                    emptyText:'Seleccionar',
+                    triggerAction: 'all',
+                    editable: false,
+                    selecOnFocus: true
+                    
+                }
+            ]
+        },
+        {
+            xtype: 'fieldset',
+            x: 10,
+            y: 110,
+            height: 100,
+            width: 420,
+            layout: 'absolute',
+            title: 'Retirado',
+            items: [
+                {
+                    xtype: 'numberfield',
+                    x: 5,
+                    y: 18,
+                    width: 180,
+                    emptyText:' Primero',
+                    maxLength:2,
+                    id: 'idRetirado',
+                    fieldLabel: 'Retirado'
+                },
+                {
+                    xtype: 'numberfield',
+                    x: 315,
+                    y: 30,
+                    width: 80,
+                    id: 'id_polla_valida_retirado',
+                    //emptyText: 'id',
+                    hidden:true,
+                    maxLength:2,
+                    fieldLabel: ''
+                }
+            ]
+            },
+            {
+            xtype: 'toolbar',
+            items: [{
+                iconCls : 'myimagebuttonguardar',
+                itemId: 'aceptar',
+                height:30,
+                width:100,
+                
+                text: 'Guardar',
+                handler: function (){
+                    //if(encontrado=0){
+                      // registrarValida()                              
+                    //}
+                    //else{
+                        //actualizarBanco()
+                    //}
+                }
+            },
+            {
+                iconCls : 'myimagebuttonlimpiar',
+                height:30,
+                width:100,
+                itemId: 'limpiar',
+                text: 'Limpiar',
+                action: 'editar',
+                handler: function (){
+                    limpiarRetirado()
+                }
+            },
+            {
+                iconCls : 'myimagebuttonsalir',
+                height:30,
+                width:100,
+                text: 'Salir',
+                handler: function (){
+                    cerrarRetirado()    
+                }
+            }]
+        }]
+    });
+    
+        var main = Ext.define('App.miVentanaRetirado', {
+            extend: 'Ext.window.Window',
+            
+            renderTo    :   "contenido",
+            title: 'Nuevo Retirado',
+            closeAction :'hide',
+            closable    : false,
+            resizable   : false,
+            floatting   :   true,
+            //hidden        :   true,
+            x           :   200,
+            y           :   50,
+            border      :   true,
+            modal       :   false,
+            frame       :   true,
+            height: 260,
+            width: 455,
+            items       :   [panel3]
+        });
+
+
+//------------------------------------------------------------------------------
+
+
+
+
 //-----------------------Panel para Mostrar Resultados--------------------------
   
   
     var listadoCamposFormulario2=Ext.create('Ext.grid.Panel', {
     store: storeValida,
     id: 'listado',
+    height:170,
     layout:'fit',
     requires: ['Ext.toolbar.Paging'],
         listeners : {
@@ -535,8 +698,6 @@ Ext.onReady(function() {
     });
 //------------------------------------------------------------------------------
     
-
-
 //---------------------------------Funciones------------------------------------
     
     
@@ -653,21 +814,40 @@ Ext.onReady(function() {
                 
  
     }
+    
+     //Funcion que limpia los campos de la pantalla registrar Retirados
+    function limpiarRetirado(){
+            
+            Ext.getCmp('cmbValidaRetirado').setValue('');
+            Ext.getCmp('idRetirado').setValue('');
+   
+    }
 
-    //Funcion que cierra la ventana emergente
+    //Funcion que cierra la ventana emergente Registrar Valida
     function cerrar(){
         ventana.close();
         Ext.getCmp('verPollaJugada').setDisabled(true);
         Ext.getCmp('eliminarPollaJugada').setDisabled(true);
         Ext.getCmp('resultadoPollaJugada').setDisabled(true);
+        Ext.getCmp('retiradoPollaJugada').setDisabled(true);
     }
     
+    //Funcion que cierra la ventana emergente Registrar Retirado
+    function cerrarRetirado(){
+        ventanaRetirado.close();
+        Ext.getCmp('verPollaJugada').setDisabled(true);
+        Ext.getCmp('eliminarPollaJugada').setDisabled(true);
+        Ext.getCmp('resultadoPollaJugada').setDisabled(true);
+        Ext.getCmp('retiradoPollaJugada').setDisabled(true);
+    }
+    
+    //Funcion que cierra la ventana emergente 
     function cerrarVer(){
         ventanaResultados.close();
         Ext.getCmp('verPollaJugada').setDisabled(true);
         Ext.getCmp('eliminarPollaJugada').setDisabled(true);
         Ext.getCmp('resultadoPollaJugada').setDisabled(true);
-                   
+        Ext.getCmp('retiradoPollaJugada').setDisabled(true);
     }
     
     //Funcion para Validar si la valida ya fue registrada
@@ -732,4 +912,19 @@ Ext.onReady(function() {
             }
         });
     }
-    
+
+   //Funcion que muestra el formulario y permite Registrar Retirados
+    function mostrarFormularioRetirado(){
+        var acum;    
+        listadoCamposFormulario = Ext.getCmp('listadoCamposFormulario');
+        if (listadoCamposFormulario.getSelectionModel().hasSelection())
+            var row = listadoCamposFormulario.getSelectionModel().getSelection()[0];
+                Ext.getCmp('id_polla_valida_retirado').setValue(row.get('pollas.id'));
+  
+        //variable que permite saber que es un registrar
+        encontrado=0;  
+        if(ventanaRetirado==null) 
+            ventanaRetirado = Ext.create ('App.miVentanaRetirado')
+        
+        ventanaRetirado.show();
+    }
