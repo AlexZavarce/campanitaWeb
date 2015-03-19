@@ -1,3 +1,5 @@
+/* global Ext */
+
 var encontrado = 0;
 var ventana=null;
  var typeExtension="image"; // Variable necesaria para poder cargar la imagen
@@ -641,16 +643,7 @@ var filtersCfg = {
                     y: 515,
                     dock: 'top',
                     items: [
-                        {
-                            xtype: 'button',
-                            height: 30,
-                            width: 100,
-                            iconCls : 'myimagebuttonguardar',
-                            id:'btnGuardar',
-                            text: 'Guardar'
-
-
-                        },
+                      
                         {
                             xtype: 'button',
                             height: 30,
@@ -659,7 +652,7 @@ var filtersCfg = {
                             id:'btnLimpiar',
                             text: 'Limpiar',
                             handler: function(){
-                                limpiar()
+                                limpiar1()
                             }
                         },
                           {
@@ -709,13 +702,9 @@ var filtersCfg = {
                             emptyText:'Seleccionar',
                             triggerAction: 'all',
                             editable: false,
-                            selecOnFocus: true,
-                            listeners:{
-                              select:function(obj,record,index){
-                                      var dept = Ext.getCmp('cmbPregunta2');
-                                dept.store.loadData(record.data.id);
-                              }
-                          }
+                            selecOnFocus: true
+                            
+                          
                         },
                         {
                             xtype: 'textfield',
@@ -825,7 +814,10 @@ var filtersCfg = {
                             width: 100,
                             iconCls : 'myimagebuttonguardar',
                             id:'btnGuardar2',
-                            text: 'Guardar'
+                            text: 'Guardar',
+                            handler: function(){
+                                    registrarUsuario()
+                            }
 
                         },
                         {
@@ -834,7 +826,12 @@ var filtersCfg = {
                             width: 100,
                             iconCls : 'myimagebuttonlimpiar',
                             id:'btnLimpiar2',
-                            text: 'Limpiar'
+                            text: 'Limpiar',
+                           handler: function (){
+                                       limpiar2()    
+                                    }
+
+                            
                         },
                          {
                             xtype: 'button',
@@ -950,7 +947,24 @@ function checkFileExtension(elem) {
             method: 'GET',
             params: {
                 ajax: 'true',
-                nombre: Ext.getCmp('txtNombre').getValue().replace(/ +/g,'-'),
+                nombre: Ext.getCmp('txtNombre').getValue(),  
+                apellido:Ext.getCmp('txtApellido').getValue(),
+                fecha_nacimiento: Ext.getCmp('txtFecha').getValue(),
+                codigo_area: Ext.getCmp('cmbCodigodeArea').getValue(),
+                telefono:Ext.getCmp('txtTelefono').getValue(),
+                codigo_operadora:Ext.getCmp('cmbCodigodeOperadora').getValue(),
+                celular:Ext.getCmp('txtCelular').getValue(),
+                login:Ext.getCmp('txtNick').getValue(),
+                password:Ext.getCmp('txtClave').getValue(),
+                correo:Ext.getCmp('txtCorreo').getValue(),
+                
+                pregunta1: Ext.getCmp('cmbPregunta1').getValue(), 
+                respuesta_secreta1:Ext.getCmp('txtRespuesta1').getValue(),
+                pregunta2:Ext.getCmp('cmbPregunta2').getValue(),
+                respuesta_secreta2:Ext.getCmp('txtRespuesta2').getValue(),
+                pregunta_secreta:Ext.getCmp('txtPregunta3').getValue(),
+                respuesta_secreta:Ext.getCmp('txtRespuesta3').getValue(),
+                intentos:0,
                 estatus: 1,
             },
             //Retorno exitoso de la pagina servidora a traves del formato JSON
@@ -959,9 +973,11 @@ function checkFileExtension(elem) {
                 if (datos.exito) {
                     Ext.Msg.alert('Atención', datos.msg);
                     Ext.getCmp('listadoCamposFormulario').getStore().load();
-                    limpiar();
+                    limpiar1();
+                    limpiar2();
                     cerrar();
-                } else {
+                }
+                else {
                     Ext.Msg.alert('Atención', datos.msg);
                 }
             },
@@ -1005,7 +1021,8 @@ function checkFileExtension(elem) {
         encontrado=0;  
         if(ventana==null) 
             ventana = Ext.create ('App.miVentana')
-        limpiar();
+        limpiar1();
+        limpiar2();
         ventana.show();
     }
     
@@ -1085,7 +1102,8 @@ function checkFileExtension(elem) {
                     if (datos.exito) {  
                         Ext.Msg.alert('Mensaje', datos.msg);
                         Ext.getCmp('listadoCamposFormulario').getStore().load();
-                        limpiar();
+                        limpiar1();
+                        limpiar2();
                         cerrar();
                     } 
                     else {
@@ -1106,8 +1124,8 @@ function checkFileExtension(elem) {
 
 
 
-    //Funcion que limpia los campos
-    function limpiar(){
+    //Funcion que limpia los campos del tab1
+    function limpiar1(){
             Ext.getCmp('txtNombre').setValue('');
             Ext.getCmp('txtApellido').setValue('');
             Ext.getCmp('txtFecha').setValue('');
@@ -1116,9 +1134,20 @@ function checkFileExtension(elem) {
             Ext.getCmp('cmbCodigodeOperadora').setValue('');
             Ext.getCmp('txtCelular').setValue('');
             Ext.getCmp('txtNick').setValue('');
+            Ext.getCmp('txtClave').setValue('');
+            Ext.getCmp('txtCorreo').setValue('');
+       
+    }
+    
+      //Funcion que limpia los campos del tab2
+     function limpiar2(){
+            Ext.getCmp('cmbPregunta1').setValue('');
+            Ext.getCmp('txtRespuesta1').setValue('');
+            Ext.getCmp('cmbPregunta2').setValue('');
+            Ext.getCmp('txtRespuesta2').setValue('');
             Ext.getCmp('txtPregunta3').setValue('');
             Ext.getCmp('txtRespuesta3').setValue('');
-            Ext.getCmp('txtCorreo').setValue('');
+           
        
     }
 
