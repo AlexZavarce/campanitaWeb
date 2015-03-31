@@ -709,11 +709,10 @@ var filtersCfg = {
                                select: function (cmb, record){
                                     Ext.getCmp('cmbCodigodeOperadora').getValue();
                           
-                       }, 
-                     
-                            
-                          
+                                                          }, 
+                                        },
                         },
+                        
                         {
                             xtype: 'textfield',
                             x: 320,
