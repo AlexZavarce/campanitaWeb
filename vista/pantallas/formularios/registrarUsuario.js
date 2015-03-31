@@ -132,17 +132,18 @@ var comboPregunta1Store = Ext.create('Ext.data.Store', {
 });
 
 //Definicion del Data Store 
-var comboPregunta1Store = Ext.create('Ext.data.Store', {
+var comboPregunta2Store = Ext.create('Ext.data.Store', {
    
     model: 'Pregunta2',
     autoLoad: true,
     proxy: {
             type: 'ajax',
-            url : 'control/mostrarComboPregunta2.php',
+            url : 'control/mostrarComboPregunta2.php?test=1',
+            method: 'GET',
             reader: {
                   type: 'json',
                   root: 'preguntas',
-                  
+                
               }
            }
 
@@ -702,7 +703,14 @@ var filtersCfg = {
                             emptyText:'Seleccionar',
                             triggerAction: 'all',
                             editable: false,
-                            selecOnFocus: true
+                            selecOnFocus: true,
+                            
+                            listeners: {
+                               select: function (cmb, record){
+                                    Ext.getCmp('cmbCodigodeOperadora').getValue();
+                          
+                       }, 
+                     
                             
                           
                         },
@@ -725,7 +733,7 @@ var filtersCfg = {
                             width: 300,
                             fieldLabel: 'Pregunta (*):',
                             id : 'cmbPregunta2',
-                            store: comboPregunta1Store,
+                            store: comboPregunta2Store,
                             valueField: 'id',
                             displayField: 'descripcion',   
                             queryMode: 'remote',
@@ -865,7 +873,7 @@ var filtersCfg = {
             closable    : false,
             resizable   : false,
             floatting   :   true,
-            //hidden        :   true,
+            hidden        :   true,
             x           :   150,
             y           :   -120,
             border      :   true,
@@ -944,7 +952,7 @@ function checkFileExtension(elem) {
     function registrarUsuario() {
         Ext.Ajax.request({
             url: 'control/registrarUsuario.php',
-            method: 'GET',
+            method: 'POST',
             params: {
                 ajax: 'true',
                 nombre: Ext.getCmp('txtNombre').getValue(),  
@@ -957,6 +965,7 @@ function checkFileExtension(elem) {
                 login:Ext.getCmp('txtNick').getValue(),
                 password:Ext.getCmp('txtClave').getValue(),
                 correo:Ext.getCmp('txtCorreo').getValue(),
+                foto:encodeURIComponent(document.getElementsByName('ufile_Usuario[]')[0].value) ,
                 
                 pregunta1: Ext.getCmp('cmbPregunta1').getValue(), 
                 respuesta_secreta1:Ext.getCmp('txtRespuesta1').getValue(),
@@ -1061,9 +1070,8 @@ function checkFileExtension(elem) {
                             Ext.getCmp('txtPregunta3').setValue(datos.datos.usuarios.pregunta_secreta);
                             Ext.getCmp('txtRespuesta3').setValue(datos.datos.usuarios.respuesta_secreta);
 
-                            Ext.getCmp('cmbBanco').setValue(datos.datos.usuarios.cuentas.bancos.nombre);
-                            Ext.getCmp('txtCuenta').setValue(datos.datos.usuarios.cuentas.nro_cuenta);
-                            Ext.getCmp('txtCedula').setValue(datos.datos.usuarios.cedula);
+                           
+                           
                             Ext.getCmp('txtCorreo').setValue(datos.datos.usuarios.correo);
                        ventana.show();
 
