@@ -138,7 +138,7 @@ var comboPregunta2Store = Ext.create('Ext.data.Store', {
     autoLoad: true,
     proxy: {
             type: 'ajax',
-            url : 'control/mostrarComboPregunta2.php?test=1',
+            url : 'control/mostrarComboPregunta2.php',
             method: 'GET',
             reader: {
                   type: 'json',
@@ -704,13 +704,19 @@ var filtersCfg = {
                             triggerAction: 'all',
                             editable: false,
                             selecOnFocus: true,
+                             listeners: {
+                                'select': function(cmb, data, idx) {
+                                  city = Ext.getCmp('cmbPregunta2');
+                                  city.clearValue();
+                                  city.store.load({
+                                    params: {
+                                      'test':Ext.getCmp('cmbPregunta1').getValue(),
+                                    }
+                                  });
+                                  city.enable();
+                                }
+                              }
                             
-                            listeners: {
-                               select: function (cmb, record){
-                                    Ext.getCmp('cmbCodigodeOperadora').getValue();
-                          
-                                                          }, 
-                                        },
                         },
                         
                         {
